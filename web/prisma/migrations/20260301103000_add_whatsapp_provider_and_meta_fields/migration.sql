@@ -1,0 +1,15 @@
+DO $$
+BEGIN
+  CREATE TYPE "WhatsAppProvider" AS ENUM ('EVOLUTION', 'META_CLOUD');
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END
+$$;
+
+ALTER TABLE "ClinicBotSettings"
+ADD COLUMN IF NOT EXISTS "whatsappProvider" "WhatsAppProvider" NOT NULL DEFAULT 'EVOLUTION',
+ADD COLUMN IF NOT EXISTS "metaPhoneNumberId" TEXT,
+ADD COLUMN IF NOT EXISTS "metaAccessToken" TEXT,
+ADD COLUMN IF NOT EXISTS "metaWebhookVerifyToken" TEXT,
+ADD COLUMN IF NOT EXISTS "metaAppSecret" TEXT,
+ADD COLUMN IF NOT EXISTS "metaApiVersion" TEXT NOT NULL DEFAULT 'v23.0';

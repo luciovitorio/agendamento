@@ -1,0 +1,2 @@
+-- Baseline migration for existing environments that were provisioned with `prisma db push`.
+-- Intentionally left empty.

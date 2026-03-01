@@ -1,0 +1,2 @@
+src/app/login/page.tsx(1,27): error TS2306: File 'C:/projetos/agendamentos/demo-environment/web/src/app/login/_components/login-form.tsx' is not a module.
+src/auth.ts(32,19): error TS2552: Cannot find name 'bcrypt'. Did you mean 'crypto'?

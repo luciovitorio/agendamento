@@ -1,0 +1,305 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ATENDENTE
+  DOUTOR
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  BLOCKED
+}
+
+enum PatientCoverageType {
+  PARTICULAR
+  PLAN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum BookingSource {
+  WEB
+  MANUAL
+  BOT_N8N
+}
+
+enum WhatsAppProvider {
+  EVOLUTION
+  META_CLOUD
+}
+
+model User {
+  id                      String                @id @default(cuid())
+  name                    String
+  email                   String                @unique
+  password                String // Hashed password
+  role                    Role                  @default(ATENDENTE)
+  status                  UserStatus            @default(PENDING)
+  lastLoginAt             DateTime?
+  lastRecoveryEmailSentAt DateTime?
+  createdBookings         Booking[]             @relation("BookingCreatedBy")
+  createdTimeOffs         ProfessionalTimeOff[] @relation("TimeOffCreatedBy")
+  updatedBotSettings      ClinicBotSettings[]   @relation("BotSettingsUpdatedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Professional {
+  id        String  @id @default(cuid())
+  name      String
+  email     String  @unique
+  bio       String?
+  avatarUrl String?
+
+  schedules Schedule[]
+  timeOffs  ProfessionalTimeOff[]
+  services  ProfessionalService[]
+  bookings  Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HealthPlan {
+  id   String @id @default(cuid())
+  name String @unique
+
+  patients Patient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  duration    Int // Duration in minutes
+  price       Float?
+
+  professionals ProfessionalService[]
+  bookings      Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProfessionalService {
+  professionalId String
+  serviceId      String
+
+  professional Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  service      Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@id([professionalId, serviceId])
+}
+
+model Schedule {
+  id             String       @id @default(cuid())
+  professionalId String
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  dayOfWeek Int // 0 = Sunday, 1 = Monday, 2 = Tuesday, etc.
+  startTime String // "09:00" format
+  endTime   String // "18:00" format
+
+  @@unique([professionalId, dayOfWeek]) // Typically one schedule block per day per professional, or remove if supporting multiple spans
+}
+
+model Patient {
+  id           String              @id @default(cuid())
+  name         String
+  phone        String              @unique // WhatsApp number formatted
+  email        String?
+  coverageType PatientCoverageType @default(PARTICULAR)
+  healthPlanId String?
+  healthPlan   HealthPlan?         @relation(fields: [healthPlanId], references: [id], onDelete: SetNull)
+  bookings     Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id                String        @id @default(cuid())
+  date              DateTime // The specific date of the booking
+  startTime         String // The time it starts e.g. "14:00"
+  endTime           String // The time it ends e.g. "14:30"
+  status            BookingStatus @default(PENDING)
+  source            BookingSource @default(WEB)
+  createdByUserId   String?
+  createdByUser     User?         @relation("BookingCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  externalRequestId String?       @unique
+
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  professionalId String
+  professional   Professional @relation(fields: [professionalId], references: [id])
+
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+  reminders BookingReminder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([professionalId, date, startTime])
+  @@index([professionalId, date, status])
+  @@index([patientId, date])
+}
+
+model ProfessionalTimeOff {
+  id             String       @id @default(cuid())
+  professionalId String
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  startDateTime DateTime
+  endDateTime   DateTime
+  reason        String?
+
+  createdByUserId String?
+  createdByUser   User?   @relation("TimeOffCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([professionalId, startDateTime, endDateTime])
+}
+
+model ClinicBotSettings {
+  id                     String  @id @default(cuid())
+  singletonKey           String  @unique @default("default")
+  whatsappProvider       WhatsAppProvider @default(EVOLUTION)
+  isBotEnabled           Boolean @default(true)
+  useInteractiveMessages Boolean @default(false)
+  interactiveMenuTitle   String  @default("Opções")
+  interactiveMenuButtonText String @default("Ver opções")
+  interactiveMenuSectionTitle String @default("Selecione uma opção")
+  interactiveBackLabel   String  @default("Voltar")
+  interactiveBackDescription String @default("Voltar ao menu")
+  greetingKeywords       String?
+  availabilityDaysAhead  Int     @default(14)
+  availabilityMaxDates   Int     @default(3)
+  availabilityPreviewTimes Int   @default(5)
+  upcomingBookingsLimit  Int     @default(5)
+  messageTypingDelayMs   Int     @default(1200)
+  messageTypingPresence  String  @default("composing")
+  whatsappPhone          String?
+  evolutionApiUrl        String?
+  evolutionInstanceName  String?
+  evolutionApiToken      String?
+  evolutionWebhookToken  String?
+  metaPhoneNumberId      String?
+  metaAccessToken        String?
+  metaWebhookVerifyToken String?
+  metaAppSecret          String?
+  metaApiVersion         String  @default("v23.0")
+  webhookTargetMode      String  @default("system")
+  systemWebhookBaseUrl   String? @default("http://localhost:3000")
+  n8nBaseUrl             String?
+  n8nWebhookMode         String  @default("production")
+  n8nWebhookPath         String  @default("evolution")
+  welcomeMessage         String
+  firstContactMessage    String  @default("Que bom falar com voce. Para criar seu cadastro e seguir com o agendamento, me envie: nome completo, data de nascimento e CPF.")
+  fallbackMessage        String
+  businessHoursMessage   String
+  confirmMessage         String
+  cancelMessage          String
+  rescheduleMessage      String
+  humanHandoffMessage    String
+  bookingReminderRulesJson String @default("[]")
+  allowAutoCancel        Boolean @default(true)
+  allowAutoReschedule    Boolean @default(true)
+  updatedByUserId        String?
+  updatedByUser          User?   @relation("BotSettingsUpdatedBy", fields: [updatedByUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BotHandoffSession {
+  phone         String            @id
+  mode          String
+  reason        String?
+  assignedAgent String?           @map("assigned_agent")
+  openedAt      DateTime?         @map("opened_at")
+  closedAt      DateTime?         @map("closed_at")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  events        BotHandoffEvent[]
+  messages      BotHandoffMessage[]
+
+  @@map("bot_handoff_sessions")
+}
+
+model BotHandoffEvent {
+  id            BigInt            @id @default(autoincrement())
+  phone         String
+  previousMode  String?           @map("previous_mode")
+  nextMode      String            @map("next_mode")
+  reason        String?
+  actor         String?
+  assignedAgent String?           @map("assigned_agent")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  session       BotHandoffSession @relation(fields: [phone], references: [phone], onDelete: Cascade)
+
+  @@index([phone, createdAt], map: "bot_handoff_events_phone_created_at_idx")
+  @@map("bot_handoff_events")
+}
+
+model BotHandoffMessage {
+  id           BigInt            @id @default(autoincrement())
+  phone        String
+  direction    String
+  content      String
+  contentType  String            @default("text") @map("content_type")
+  senderUserId String?           @map("sender_user_id")
+  senderName   String?           @map("sender_name")
+  readAt       DateTime?         @map("read_at")
+  createdAt    DateTime          @default(now()) @map("created_at")
+  session      BotHandoffSession @relation(fields: [phone], references: [phone], onDelete: Cascade)
+
+  @@index([phone, createdAt], map: "bot_handoff_messages_phone_created_at_idx")
+  @@map("bot_handoff_messages")
+}
+
+model BookingReminder {
+  id                  BigInt  @id @default(autoincrement())
+  bookingId           String  @map("booking_id")
+  patientPhone        String  @map("patient_phone")
+  offsetHours         Int     @map("offset_hours")
+  messageTemplate     String  @map("message_template")
+  requireConfirmation Boolean @default(false) @map("require_confirmation")
+  sendAt              DateTime @map("send_at")
+  status              String  @default("PENDING")
+  attempts            Int     @default(0)
+  sentAt              DateTime? @map("sent_at")
+  confirmedAt         DateTime? @map("confirmed_at")
+  evolutionMessageId  String? @map("evolution_message_id")
+  lastError           String? @map("last_error")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  booking             Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, offsetHours], map: "booking_reminders_booking_offset_key")
+  @@index([status, sendAt], map: "booking_reminders_status_send_at_idx")
+  @@index([patientPhone, status], map: "booking_reminders_phone_status_idx")
+  @@map("booking_reminders")
+}
