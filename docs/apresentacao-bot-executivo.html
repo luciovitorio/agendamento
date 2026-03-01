@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Case - Bot WhatsApp para Clinicas</title>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --ink: #0f172a;
+        --muted: #475569;
+        --line: #dbeafe;
+        --ok: #065f46;
+        --ok-soft: #d1fae5;
+        --warn: #92400e;
+        --warn-soft: #ffedd5;
+        --brand: #0c4a6e;
+        --brand-soft: #e0f2fe;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(980px 420px at 8% -10%, #dbeafe 0%, transparent 60%),
+          radial-gradient(900px 380px at 95% 0%, #ccfbf1 0%, transparent 60%),
+          var(--bg);
+      }
+
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 20px 16px 34px;
+      }
+
+      .hero, .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
+      }
+
+      .card { margin-top: 12px; }
+
+      .tag {
+        display: inline-block;
+        border: 1px solid #7dd3fc;
+        background: var(--brand-soft);
+        color: var(--brand);
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 8px 0 6px;
+        font-size: 34px;
+        line-height: 1.1;
+      }
+
+      h2 {
+        margin: 0 0 10px;
+        font-size: 22px;
+      }
+
+      h3 {
+        margin: 0 0 8px;
+        font-size: 17px;
+      }
+
+      p {
+        margin: 6px 0;
+        line-height: 1.5;
+      }
+
+      .muted { color: var(--muted); }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .metric {
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .metric strong {
+        font-size: 22px;
+        display: block;
+      }
+
+      .okbox {
+        border: 1px solid #86efac;
+        background: var(--ok-soft);
+        color: var(--ok);
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      .warnbox {
+        border: 1px solid #fdba74;
+        background: var(--warn-soft);
+        color: var(--warn);
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        font-size: 14px;
+      }
+
+      th, td {
+        border: 1px solid #dbeafe;
+        padding: 8px;
+        vertical-align: top;
+      }
+
+      th {
+        text-align: left;
+        background: #eff6ff;
+      }
+
+      ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      li { margin: 4px 0; }
+
+      @media (max-width: 900px) {
+        .grid-3 { grid-template-columns: 1fr; }
+        h1 { font-size: 29px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <span class="tag">Business Case Executivo</span>
+        <h1>Bot WhatsApp para Clinicas</h1>
+        <p class="muted">
+          Solução para reduzir custo operacional, acelerar atendimento e converter mais
+          contatos em agendamentos confirmados.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Tese de valor</h2>
+        <div class="grid-3">
+          <div class="metric">
+            <small class="muted">Produtividade</small>
+            <strong>+ Atendimento</strong>
+            <p class="muted">Automatiza tarefas repetitivas no WhatsApp.</p>
+          </div>
+          <div class="metric">
+            <small class="muted">Eficiência</small>
+            <strong>- Custo</strong>
+            <p class="muted">Menos carga no time para operações de baixo valor.</p>
+          </div>
+          <div class="metric">
+            <small class="muted">Receita</small>
+            <strong>+ Conversão</strong>
+            <p class="muted">Resposta rápida aumenta chance de agendamento.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Modelo operacional recomendado</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Cenário</th>
+              <th>Arquitetura</th>
+              <th>Objetivo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Base (80% dos clientes)</td>
+              <td>Evolution + Sistema da clínica</td>
+              <td>Rapidez de implantação e menor complexidade.</td>
+            </tr>
+            <tr>
+              <td>Integração avançada</td>
+              <td>Evolution + n8n + sistema externo</td>
+              <td>Conectar Google Agenda/ERP por projeto.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>ROI simples para tomada de decisão</h2>
+        <p class="muted">
+          Use esta fórmula na reunião:
+        </p>
+        <div class="okbox">
+          <strong>ROI mensal = (Horas economizadas x custo/hora equipe) + receita incremental - custo da solução</strong>
+        </div>
+        <ul>
+          <li>Horas economizadas: queda no volume de atendimento manual.</li>
+          <li>Receita incremental: agendamentos recuperados por resposta imediata.</li>
+          <li>Custo da solução: assinatura + operação.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Trial de 15 dias orientado a resultado</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Fase</th>
+              <th>Meta</th>
+              <th>Indicadores</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>D1-D3</td>
+              <td>Subir operação</td>
+              <td>Conexão ativa, fluxo funcional, equipe treinada.</td>
+            </tr>
+            <tr>
+              <td>D4-D10</td>
+              <td>Rodar em produção assistida</td>
+              <td>Tempo de resposta, taxa de resolução automática.</td>
+            </tr>
+            <tr>
+              <td>D11-D15</td>
+              <td>Decisão executiva</td>
+              <td>ROI preliminar e plano de expansão.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Riscos e mitigação</h2>
+        <div class="warnbox">
+          <strong>Risco:</strong> criar operação complexa cedo demais.<br />
+          <strong>Mitigação:</strong> começar sem n8n e ativar integrações avançadas somente quando houver necessidade real do cliente.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Mensagem de fechamento (executivo)</h2>
+        <p>
+          "Vamos medir resultado em 15 dias. Se houver ganho operacional e financeiro,
+          escalamos. Se não houver, encerramos sem fricção."
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

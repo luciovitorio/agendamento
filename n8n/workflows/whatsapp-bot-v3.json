@@ -1,0 +1,505 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolution",
+        "options": {}
+      },
+      "id": "3e2283c3-93bf-46b3-996e-1bce85c40882",
+      "name": "Webhook (Evolution)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        944,
+        736
+      ],
+      "webhookId": "9e1bd6bb-cba5-4ce0-9dd1-eebf0925f6e8"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Telefone do paciente: {{ $json.number }}\nMensagem: {{ $json.text }}",
+        "options": {
+          "systemMessage": "Você é a secretária virtual da Clínica. Seja profissional, simpática e direta.\n\nSUAS FERRAMENTAS DISPONÍVEIS:\n1. Buscar Paciente — Verifica se já tem cadastro pelo telefone\n2. Listar Planos — Lista planos de saúde aceitos\n3. Criar Paciente — Cria cadastro de novo contato\n4. Listar Serviços — Lista especialidades/serviços com profissionais vinculados\n5. Verificar Disponibilidade — Mostra horários disponíveis de um profissional\n6. Criar Agendamento — Cria a consulta\n\nFLUXO OBRIGATÓRIO:\n\n1. IDENTIFICAÇÃO:\n- Ao receber a primeira mensagem, use Buscar Paciente com o telefone do remetente\n- Se NOT_FOUND: peça nome completo e pergunte se tem convênio\n  - Se tem convênio: use Listar Planos para verificar. Se não aceitamos, informe e pergunte se quer continuar como particular\n  - Use Criar Paciente para registrar\n  - Após cadastro: NÃO diga que é paciente. Diga: \"Cadastro realizado, [nome]! 😊 Posso te ajudar a agendar uma consulta?\"\n- Se FOUND: cumprimente pelo nome e pergunte como pode ajudar\n\n2. AGENDAMENTO:\n- Quando pedir agendamento, use Listar Serviços para mostrar as especialidades disponíveis\n- Após escolher especialidade, mostre os profissionais vinculados àquele serviço\n- Se houver mais de um profissional, pergunte a preferência\n- Após escolher profissional, use Verificar Disponibilidade (precisa de professionalId e serviceId)\n- Mostre os horários disponíveis agrupados por dia (ex: \"📅 Ter 25/02 — 09:00, 10:30, 14:00\")\n- Limite a exibição a no máximo 3 dias com horários. Se precisar de mais, diga que tem mais opções\n- Após o paciente escolher, use Criar Agendamento com todos os dados\n- Confirme o agendamento com data, hora, profissional e serviço\n\n3. OUTROS:\n- Se pedir cancelamento ou remarcar: diga que vai encaminhar para atendimento\n- Se pedir atendente humano: diga que vai encaminhar\n\nREGRAS:\n- Responda APENAS em português do Brasil\n- Use emojis com moderação (1-2 por mensagem)\n- Mensagens curtas e objetivas (estilo WhatsApp)\n- NUNCA invente informações — use SEMPRE as ferramentas\n- NUNCA invente horários — SEMPRE consulte Verificar Disponibilidade\n- Ao listar opções, use formato de lista numerada para facilitar a escolha"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1664,
+        688
+      ],
+      "id": "d63d6232-f6c3-43e1-b0de-54fcda09e7ec",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1664,
+        864
+      ],
+      "id": "7ec0a58b-6682-4543-b834-2d79944d1969",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "kMmHKpnyzUULldYV",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "84b38bdc-625f-49ee-b776-64a59439797b",
+              "name": "event",
+              "value": "={{ $json.body?.event || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "485803cf-7150-49be-809e-a2988af8358b",
+              "name": "fromMe",
+              "value": "={{ $json.body?.data?.key?.fromMe || false }}",
+              "type": "boolean"
+            },
+            {
+              "id": "d3538794-2105-45d5-968f-7ffcfb255279",
+              "name": "remoteJid",
+              "value": "={{ $json.body?.data?.key?.remoteJid || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "fd49d3d0-bfb5-47b1-adc3-91ffb9fdec9d",
+              "name": "number",
+              "value": "={{ ($json.body?.data?.key?.remoteJid || '').replace('@s.whatsapp.net', '').replace('@g.us', '') }}",
+              "type": "string"
+            },
+            {
+              "id": "9e3e1559-e52f-4a51-9233-486de4495476",
+              "name": "text",
+              "value": "={{ $json.body?.data?.message?.conversation || $json.body?.data?.message?.extendedTextMessage?.text || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "a3342c28-34a6-4f2d-8f2a-79de8e94718c",
+              "name": "textNorm",
+              "value": "={{ (($json.body?.data?.message?.conversation || $json.body?.data?.message?.extendedTextMessage?.text || '').toLowerCase().trim()).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1136,
+        688
+      ],
+      "id": "00b6075b-126f-414d-b88b-6adda7623917",
+      "name": "Normalizar Entrada"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1fedf9bf-ad7d-42bf-bb04-18b7cca87cc3",
+              "leftValue": "={{ $json.event }}",
+              "rightValue": "messages.upsert",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "6e470e1f-c4d8-409a-9828-fe7e001b9d95",
+              "leftValue": "={{ $json.fromMe }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9e6ed70c-6c60-4d3d-a281-3df5d160eba9",
+              "leftValue": "={{ $json.remoteJid }}",
+              "rightValue": "s.whatsapp.net",
+              "operator": {
+                "type": "string",
+                "operation": "endsWith"
+              }
+            },
+            {
+              "id": "ed630cf3-974b-4e6a-b917-2a577dfd61e7",
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1376,
+        768
+      ],
+      "id": "76e9af86-a16a-44a5-b117-7cee993ba11d",
+      "name": "IF 1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.number }}",
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1760,
+        864
+      ],
+      "id": "689b5e50-90f3-4e72-b67a-0a765d265f06",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca um paciente pelo número de telefone. Envie o campo \"phone\" com apenas os dígitos (ex: 5521999999999). Retorna \"FOUND\" com dados do paciente (id, name, phone, coverageType, healthPlan) ou \"NOT_FOUND\" se não tem cadastro.",
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/integrations/n8n/patients/by-phone",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"phone\": \"{{ $('Normalizar Entrada').item.json.number }}\"}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        1504,
+        496
+      ],
+      "id": "96a28ba5-d329-4fdb-a7a4-872c3f8e8278",
+      "name": "Buscar Paciente",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "QyAUoSm5iJtKAc2o",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Lista todos os planos de saúde aceitos pela clínica. Não precisa de body. Retorna a lista de planos com id e nome.",
+        "url": "http://host.docker.internal:3000/api/integrations/n8n/health-plans",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        1664,
+        496
+      ],
+      "id": "da7a46db-b672-4f87-99b8-9681a1d2a28b",
+      "name": "Listar Planos",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "QyAUoSm5iJtKAc2o",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Cria um novo paciente/contato. Envie JSON com: \"name\" (nome completo), \"phone\" (número do WhatsApp, apenas dígitos), \"coverageType\" (\"PARTICULAR\" ou \"PLAN\"), e \"healthPlanName\" (nome do plano, obrigatório se coverageType for PLAN). Retorna os dados do cadastro criado.",
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/integrations/n8n/patients",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        1824,
+        496
+      ],
+      "id": "7f2dd3fe-6525-4283-b0c2-324349be5236",
+      "name": "Criar Paciente",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "QyAUoSm5iJtKAc2o",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Lista os serviços/especialidades disponíveis na clínica com os profissionais que atendem cada serviço. Não precisa de body. Retorna: id, nome, duração em minutos, preço e lista de profissionais (id e nome) de cada serviço. Use para mostrar ao paciente quais especialidades a clínica oferece.",
+        "url": "http://host.docker.internal:3000/api/integrations/n8n/services",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        1984,
+        496
+      ],
+      "id": "a1b2c3d4-e5f6-7890-abcd-100000000001",
+      "name": "Listar Servicos",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "QyAUoSm5iJtKAc2o",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Verifica horários disponíveis de um profissional para os próximos dias. Use query params na URL: professionalId (obrigatório), serviceId (obrigatório, para calcular duração), days (opcional, default 7, máximo 14). Retorna lista de datas com horários livres. SEMPRE use esta ferramenta antes de agendar — NUNCA invente horários.",
+        "url": "=http://host.docker.internal:3000/api/integrations/n8n/availability?professionalId={{ $fromAI('professionalId') }}&serviceId={{ $fromAI('serviceId') }}&days=7",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        2144,
+        496
+      ],
+      "id": "a1b2c3d4-e5f6-7890-abcd-100000000002",
+      "name": "Verificar Disponibilidade",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "QyAUoSm5iJtKAc2o",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Cria um agendamento/consulta. Envie JSON com: \"professionalId\", \"serviceId\", \"dateStr\" (formato YYYY-MM-DD), \"startTime\" (formato HH:mm), \"patientName\", \"patientPhone\" (apenas dígitos), \"status\" (\"PENDING\"), \"externalRequestId\" (gere um ID único). Retorna o booking criado ou erro se horário indisponível.",
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/integrations/n8n/appointments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        2304,
+        496
+      ],
+      "id": "6e9f028d-953c-4dba-bb50-c0f824bb452b",
+      "name": "Criar Agendamento",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "QyAUoSm5iJtKAc2o",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/clinica-demo-01",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "EvoAutoBusiness2026!"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('Normalizar Entrada').item.json.number }}\",\n  \"textMessage\": {\n    \"text\": \"{{ $json.output }}\"\n  },\n  \"options\": {\n    \"delay\": 2000,\n    \"presence\": \"composing\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1952,
+        832
+      ],
+      "id": "a04befa4-603f-401f-9d0a-da7750c2884b",
+      "name": "Responder WhatsApp"
+    }
+  ],
+  "connections": {
+    "Webhook (Evolution)": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Responder WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Entrada": {
+      "main": [
+        [
+          {
+            "node": "IF 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF 1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Paciente": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar Planos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Paciente": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar Servicos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Disponibilidade": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Agendamento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9c7ca0eeac667d5ec478b954b9b79a2d93bcd6ab1fd634a3832841e434f80c8e"
+  }
+}

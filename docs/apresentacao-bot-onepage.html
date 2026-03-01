@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bot WhatsApp para Clinicas - One Page</title>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --ink: #0f172a;
+        --muted: #475569;
+        --card: #ffffff;
+        --line: #dbeafe;
+        --brand: #0f766e;
+        --brand-soft: #ccfbf1;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(900px 380px at 8% -10%, #cffafe 0%, transparent 55%),
+          radial-gradient(900px 360px at 92% 0%, #ddd6fe 0%, transparent 55%),
+          var(--bg);
+      }
+
+      .wrap {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 18px 14px 30px;
+      }
+
+      .hero, .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+      }
+
+      .card { margin-top: 10px; }
+
+      .pill {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: var(--brand);
+        background: var(--brand-soft);
+        border: 1px solid #99f6e4;
+        border-radius: 999px;
+        padding: 3px 9px;
+      }
+
+      h1 {
+        margin: 8px 0 6px;
+        font-size: 30px;
+        line-height: 1.1;
+      }
+
+      h2 {
+        margin: 0 0 8px;
+        font-size: 19px;
+      }
+
+      p {
+        margin: 6px 0;
+        line-height: 1.45;
+      }
+
+      .muted { color: var(--muted); }
+
+      ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      li { margin: 4px 0; }
+
+      .flow {
+        margin-top: 8px;
+        padding: 10px;
+        border: 1px dashed #93c5fd;
+        border-radius: 10px;
+        background: #eff6ff;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .cta {
+        margin-top: 10px;
+        border: 1px solid #86efac;
+        background: #f0fdf4;
+        border-radius: 12px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <span class="pill">Apresentacao rapida</span>
+        <h1>Bot WhatsApp para Clinicas</h1>
+        <p class="muted">
+          Agendamento, consulta e cancelamento pelo WhatsApp, com painel de
+          controle para a clinica.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Como funciona hoje</h2>
+        <div class="flow">
+          Paciente -> WhatsApp -> Evolution -> Sistema da clinica -> Resposta no WhatsApp
+        </div>
+        <ul>
+          <li>Sem depender de n8n no fluxo principal.</li>
+          <li>Mais simples de operar e vender.</li>
+          <li>Ideal para demonstracao e trial rapido.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Quando usar n8n</h2>
+        <p class="muted">
+          Somente para clientes que precisem integrar Google Agenda, ERP ou
+          automacoes especificas.
+        </p>
+        <div class="flow">
+          Evolution -> n8n (opcional) -> Sistema externo do cliente
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>O que o paciente consegue fazer</h2>
+        <ul>
+          <li>Agendar consulta.</li>
+          <li>Ver agendamentos.</li>
+          <li>Cancelar quando habilitado.</li>
+          <li>Pedir atendimento humano.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Modelo comercial recomendado</h2>
+        <ul>
+          <li>Demo guiada em 20 a 30 minutos.</li>
+          <li>Trial de 15 dias em operacao real.</li>
+          <li>Ajustes de regra e mensagem durante o periodo.</li>
+        </ul>
+        <div class="cta">
+          <strong>Mensagem curta para fechamento:</strong>
+          <p>
+            "Você testa 15 dias sem fricção. Se gerar resultado, seguimos com a implantação completa."
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

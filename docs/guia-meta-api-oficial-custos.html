@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guia Meta API Oficial - Dados do Cliente e Previsao de Custos</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --text: #0f172a;
+        --muted: #475569;
+        --line: #dbe4ef;
+        --accent: #0f766e;
+        --accent-soft: #ccfbf1;
+        --warn: #92400e;
+        --warn-soft: #ffedd5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 45%, #ecfeff 100%);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 28px 20px 44px;
+      }
+
+      .hero {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 6px 24px rgba(15, 23, 42, 0.05);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 32px;
+      }
+
+      h2 {
+        margin: 24px 0 10px;
+        font-size: 22px;
+      }
+
+      h3 {
+        margin: 18px 0 8px;
+        font-size: 18px;
+      }
+
+      p {
+        margin: 8px 0;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .card {
+        margin-top: 18px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+      }
+
+      .tag {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent);
+        border: 1px solid #99f6e4;
+        border-radius: 999px;
+        padding: 2px 10px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .warn {
+        border: 1px solid #fdba74;
+        background: var(--warn-soft);
+        color: var(--warn);
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 12px;
+      }
+
+      .ok {
+        border: 1px solid #86efac;
+        background: #f0fdf4;
+        color: #166534;
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 10px;
+        vertical-align: top;
+      }
+
+      th {
+        background: #eff6ff;
+        text-align: left;
+      }
+
+      code {
+        background: #0f172a;
+        color: #e2e8f0;
+        border-radius: 6px;
+        padding: 2px 6px;
+        font-size: 13px;
+      }
+
+      ol,
+      ul {
+        margin-top: 8px;
+      }
+
+      a {
+        color: #0c4a6e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="hero">
+        <span class="tag">Planejamento Comercial e Tecnico</span>
+        <h1>Meta API Oficial (WhatsApp) - O que pedir ao cliente + previsao de custos</h1>
+        <p class="muted">
+          Documento de apoio para onboarding comercial e tecnico de clientes que vao usar
+          a API oficial da Meta no WhatsApp Business Platform (Cloud API).
+        </p>
+        <p class="muted">
+          Data de referencia desta previsao: <strong>26/02/2026</strong>.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>1) Checklist: o que o cliente precisa fornecer</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Obrigatorio</th>
+              <th>Detalhe pratico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Acesso admin ao Meta Business Portfolio</td>
+              <td>Sim</td>
+              <td>Sem permissao de admin nao e possivel concluir configuracao de WABA, numero e billing.</td>
+            </tr>
+            <tr>
+              <td>WABA (WhatsApp Business Account)</td>
+              <td>Sim</td>
+              <td>Pode ser criado no onboarding. Se ja existir, pedir o ID e acesso.</td>
+            </tr>
+            <tr>
+              <td>Numero de telefone comercial</td>
+              <td>Sim</td>
+              <td>Numero para API oficial. Definir se sera novo numero, migracao ou coexistencia.</td>
+            </tr>
+            <tr>
+              <td>Token de acesso (preferencia: system user)</td>
+              <td>Sim</td>
+              <td>Usar token com escopos <code>whatsapp_business_management</code> e <code>whatsapp_business_messaging</code>.</td>
+            </tr>
+            <tr>
+              <td>Webhook publico HTTPS</td>
+              <td>Sim</td>
+              <td>URL de callback + verify token para receber eventos e status de mensagens.</td>
+            </tr>
+            <tr>
+              <td>PIN de 6 digitos para registrar numero</td>
+              <td>Sim</td>
+              <td>Necessario no registro do phone number na Cloud API (2-step verification).</td>
+            </tr>
+            <tr>
+              <td>Metodo de pagamento no Meta Business</td>
+              <td>Sim</td>
+              <td>Meta cobra diretamente o uso da API oficial (templates e demais custos aplicaveis).</td>
+            </tr>
+            <tr>
+              <td>Templates (marketing, utilitario, autenticacao)</td>
+              <td>Sim</td>
+              <td>Definir textos por caso de uso para aprovar e enviar com compliance.</td>
+            </tr>
+            <tr>
+              <td>Dados de negocio (CNPJ, razao social, site, politica)</td>
+              <td>Recomendado</td>
+              <td>Ajuda em verificacao, qualidade e continuidade operacional da conta.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>2) Checklist tecnico minimo para entrada em producao</h2>
+        <ol>
+          <li>Confirmar que o numero foi registrado e vinculado ao WABA correto.</li>
+          <li>Configurar webhook e validar recebimento de eventos.</li>
+          <li>Submeter e aprovar templates essenciais (boas-vindas, lembretes, confirmacoes, notificacoes).</li>
+          <li>Enviar mensagem de teste por API e validar status de entrega.</li>
+          <li>Conferir billing e monitoramento de qualidade do numero.</li>
+        </ol>
+        <div class="ok">
+          Boa pratica: iniciar com templates utilitarios (baixo custo) e escalar marketing
+          gradualmente para manter previsibilidade financeira.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>3) Premissas de custo usadas nesta previsao (estimativa)</h2>
+        <ul>
+          <li>Modelo: cobranca por mensagem template (Marketing, Utility, Authentication).</li>
+          <li>Mercado considerado: <strong>Brazil</strong>.</li>
+          <li>Moeda base da tabela: <strong>USD</strong>.</li>
+          <li>List rate (Brazil): Marketing <code>0.0625</code>, Utility <code>0.0068</code>, Authentication <code>0.0068</code>.</li>
+          <li>Sem adicionar markup de BSP/plataforma, sem impostos locais e sem variacao cambial.</li>
+        </ul>
+        <div class="warn">
+          Estes valores sao previsao de referencia comercial. A cobranca real depende de:
+          categoria de template, pais do destinatario (DDI), volume mensal (tiers), janela de servico
+          e eventuais taxas do seu provedor/plataforma.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>4) Formula rapida de previsao mensal</h2>
+        <p>
+          <code>Custo USD = (QtdMarketing x 0.0625) + (QtdUtilityCobrada x 0.0068) + (QtdAuth x 0.0068)</code>
+        </p>
+        <p class="muted">
+          Em volumes maiores, Utility e Authentication podem reduzir por tiers (rate card por faixa de volume).
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>5) Simulacao de gasto por volume (cenarios)</h2>
+        <p class="muted">
+          Leitura: cada cenario usa um mix diferente de mensagens. Serve para previsao comercial,
+          nao como fatura final.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Cenario</th>
+              <th>Mix assumido</th>
+              <th>1.000 msgs/mes</th>
+              <th>10.000 msgs/mes</th>
+              <th>50.000 msgs/mes</th>
+              <th>100.000 msgs/mes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Operacional (baixo marketing)</td>
+              <td>10% marketing, 20% utility cobrada, 70% mensagens sem custo direto</td>
+              <td>US$ 7.61</td>
+              <td>US$ 76.10</td>
+              <td>US$ 380.50</td>
+              <td>US$ 761.00</td>
+            </tr>
+            <tr>
+              <td>Misto (operacao + campanhas)</td>
+              <td>25% marketing, 60% utility cobrada, 15% mensagens sem custo direto</td>
+              <td>US$ 19.71</td>
+              <td>US$ 197.05</td>
+              <td>US$ 985.25</td>
+              <td>US$ 1,970.50</td>
+            </tr>
+            <tr>
+              <td>Campanha forte</td>
+              <td>60% marketing, 35% utility cobrada, 5% mensagens sem custo direto</td>
+              <td>US$ 39.88</td>
+              <td>US$ 398.80</td>
+              <td>US$ 1,994.00</td>
+              <td>US$ 3,988.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>6) Exemplo pronto para proposta comercial</h2>
+        <p>
+          Exemplo: cliente com <strong>20.000 mensagens/mes</strong>, mix de
+          <strong>20% marketing</strong>, <strong>55% utility cobrada</strong>,
+          <strong>25% sem custo direto</strong>.
+        </p>
+        <p>
+          Calculo: (4.000 x 0.0625) + (11.000 x 0.0068) = 250 + 74.8 =
+          <strong>US$ 324.80/mes</strong> (antes de taxas da plataforma e impostos).
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>7) Pontos para alinhar com o cliente antes de fechar</h2>
+        <ul>
+          <li>Quem sera responsavel por aprovar e manter templates.</li>
+          <li>Qual percentual esperado de mensagens de marketing no mes.</li>
+          <li>Quais fluxos vao usar utility dentro da janela de servico (24h).</li>
+          <li>Se havera envio internacional (impacta rate card por pais).</li>
+          <li>Se existe custo adicional do BSP/plataforma sobre a tarifa Meta.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>8) Fontes (consulta e referencia)</h2>
+        <ul>
+          <li>
+            Postman (Meta verified) - WhatsApp Cloud API docs:
+            <a href="https://www.postman.com/meta/whatsapp-business-platform/documentation/wlk6lh4/whatsapp-cloud-api">https://www.postman.com/meta/whatsapp-business-platform/documentation/wlk6lh4/whatsapp-cloud-api</a>
+          </li>
+          <li>
+            Rate card (USD Jan/2026, espelho com links oficiais da Meta):
+            <a href="https://www.gupshup.ai/resources/wp-content/uploads/2025/12/USD_Jan2026.pdf">https://www.gupshup.ai/resources/wp-content/uploads/2025/12/USD_Jan2026.pdf</a>
+          </li>
+          <li>
+            URL oficial Meta para validacao de precos:
+            <a href="https://developers.facebook.com/docs/whatsapp/pricing#rate-cards">https://developers.facebook.com/docs/whatsapp/pricing#rate-cards</a>
+          </li>
+          <li>
+            URL oficial Meta para atualizacoes de pricing:
+            <a href="https://developers.facebook.com/docs/whatsapp/pricing#updates-to-rate-cards">https://developers.facebook.com/docs/whatsapp/pricing#updates-to-rate-cards</a>
+          </li>
+        </ul>
+        <p class="muted">
+          Observacao: precos da Meta podem mudar periodicamente. Revalidar o rate card oficial
+          antes de assinar proposta final.
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

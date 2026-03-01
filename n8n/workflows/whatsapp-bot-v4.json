@@ -1,0 +1,221 @@
+{
+  "name": "WhatsApp Bot v4 (Menu-Driven)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolution",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        460,
+        340
+      ],
+      "id": "webhook-001",
+      "name": "Webhook (Evolution)",
+      "webhookId": "whatsapp-webhook-v4"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Normaliza a entrada do webhook da Evolution API\nconst body = $input.item.json.body || $input.item.json;\n\n// Extrai número do remetente\nconst remoteJid = body?.data?.key?.remoteJid || '';\nconst number = remoteJid.replace(/@s\\.whatsapp\\.net$/i, '').replace(/@c\\.us$/i, '');\n\n// Extrai texto da mensagem\nconst message = body?.data?.message?.conversation \n  || body?.data?.message?.extendedTextMessage?.text \n  || '';\n\n// Detecta tipo de mídia (audio, imagem, vídeo, sticker)\nconst msgObj = body?.data?.message || {};\nconst isMedia = !!(msgObj.audioMessage || msgObj.imageMessage || msgObj.videoMessage || msgObj.stickerMessage || msgObj.documentMessage);\n\n// Ignora mensagens do próprio bot\nconst fromMe = body?.data?.key?.fromMe || false;\n\n// Número da instância para resposta\nconst instance = body?.instance || '';\n\nreturn {\n  number,\n  message: message.trim(),\n  isMedia,\n  fromMe,\n  instance\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        340
+      ],
+      "id": "normalizar-001",
+      "name": "Normalizar Entrada"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "cond-not-from-me",
+              "leftValue": "={{ $json.fromMe }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cond-has-content",
+              "leftValue": "={{ $json.message !== '' || $json.isMedia === true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        900,
+        340
+      ],
+      "id": "if-valido-001",
+      "name": "Mensagem Valida?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/integrations/n8n/bot/process",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"phone\": \"{{ $('Normalizar Entrada').item.json.number }}\",\n  \"message\": \"{{ $('Normalizar Entrada').item.json.message }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        240
+      ],
+      "id": "processar-001",
+      "name": "Processar Mensagem",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "QyAUoSm5iJtKAc2o",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "cond-should-send",
+              "leftValue": "={{ $json.send }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1340,
+        240
+      ],
+      "id": "if-enviar-001",
+      "name": "Deve Enviar?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://localhost:8080/message/sendText/{{ $('Normalizar Entrada').item.json.instance }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('Normalizar Entrada').item.json.number }}\",\n  \"textMessage\": {\n    \"text\": \"{{ $json.response }}\"\n  },\n  \"options\": {\n    \"delay\": 1500,\n    \"presence\": \"composing\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1560,
+        140
+      ],
+      "id": "responder-001",
+      "name": "Responder WhatsApp",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "pRjNrqjkNjeMIB6S",
+          "name": "apikey"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook (Evolution)": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Entrada": {
+      "main": [
+        [
+          {
+            "node": "Mensagem Valida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem Valida?": {
+      "main": [
+        [
+          {
+            "node": "Processar Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Processar Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Deve Enviar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deve Enviar?": {
+      "main": [
+        [
+          {
+            "node": "Responder WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

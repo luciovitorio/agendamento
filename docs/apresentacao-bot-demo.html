@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apresentacao Comercial - Bot WhatsApp para Clinicas</title>
+    <style>
+      :root {
+        --bg-1: #f8fafc;
+        --bg-2: #eef2ff;
+        --ink: #0f172a;
+        --muted: #475569;
+        --line: #dbeafe;
+        --card: #ffffff;
+        --brand: #0f766e;
+        --brand-2: #0369a1;
+        --brand-soft: #ccfbf1;
+        --gold: #92400e;
+        --gold-soft: #fef3c7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Avenir Next", "Trebuchet MS", "Franklin Gothic Medium", sans-serif;
+        background:
+          radial-gradient(1200px 520px at 10% -10%, #cffafe 0%, transparent 60%),
+          radial-gradient(1100px 500px at 95% 0%, #ddd6fe 0%, transparent 60%),
+          linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 36%, #ecfeff 100%);
+      }
+
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 24px 20px 44px;
+      }
+
+      .hero {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 14px 34px rgba(2, 6, 23, 0.08);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -120px;
+        top: -90px;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #99f6e4 0%, rgba(153, 246, 228, 0.08) 65%, transparent 75%);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 38px;
+        letter-spacing: -0.02em;
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 24px;
+      }
+
+      h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+
+      p {
+        margin: 8px 0;
+        line-height: 1.55;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid #99f6e4;
+        background: var(--brand-soft);
+        color: var(--brand);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      }
+
+      .section {
+        margin-top: 16px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .flow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .flow span {
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .flow .arrow {
+        background: transparent;
+        border: 0;
+        color: var(--brand-2);
+        padding: 8px 2px;
+      }
+
+      ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      li {
+        margin: 4px 0;
+      }
+
+      .plan {
+        border: 1px solid #fde68a;
+        background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+        color: var(--gold);
+        border-radius: 14px;
+        padding: 12px 14px;
+      }
+
+      .cta {
+        margin-top: 16px;
+        border: 1px solid #a7f3d0;
+        background: linear-gradient(180deg, #f0fdfa 0%, #ecfeff 100%);
+        border-radius: 16px;
+        padding: 16px;
+      }
+
+      .small {
+        font-size: 13px;
+      }
+
+      @media (max-width: 950px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          font-size: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="hero">
+        <span class="pill">Apresentacao Comercial</span>
+        <h1>Bot WhatsApp para Clinicas</h1>
+        <p class="muted">
+          Uma experiencia simples para o paciente e poderosa para a clinica:
+          agendar, consultar e cancelar pelo WhatsApp, com dashboard e operacao centralizada.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Mais agilidade no atendimento</h3>
+            <p class="small muted">
+              O bot responde 24/7 para tarefas repetitivas e reduz fila no atendimento humano.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Padrao unico de conversa</h3>
+            <p class="small muted">
+              A clinica define mensagens, regras e menus interativos em um unico painel.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Escalavel por perfil de cliente</h3>
+            <p class="small muted">
+              Funciona sem n8n no modo padrao e habilita n8n apenas quando o cliente precisar.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section grid-2">
+        <article class="card">
+          <h2>Como funciona hoje (modo padrao)</h2>
+          <div class="flow">
+            <span>WhatsApp do paciente</span>
+            <span class="arrow">></span>
+            <span>Evolution API</span>
+            <span class="arrow">></span>
+            <span>Sistema da clinica</span>
+            <span class="arrow">></span>
+            <span>Resposta no WhatsApp</span>
+          </div>
+          <ul>
+            <li>Sem dependencia de n8n no fluxo principal.</li>
+            <li>Menos pontos de falha e suporte mais simples.</li>
+            <li>Ideal para demonstracao e trial rapido.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>Quando entra o n8n</h2>
+          <p class="muted small">
+            Para clientes que ja usam agenda externa, ERP ou fluxo de automacao corporativo.
+          </p>
+          <div class="flow">
+            <span>Evolution</span>
+            <span class="arrow">></span>
+            <span>n8n (opcional)</span>
+            <span class="arrow">></span>
+            <span>Sistema externo do cliente</span>
+          </div>
+          <ul>
+            <li>Ligado por cliente, nao por plataforma inteira.</li>
+            <li>Mantem a mesma interface de conversa para o paciente.</li>
+            <li>Permite projetos sob medida sem quebrar o produto base.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="section grid-2">
+        <article class="card">
+          <h2>O que o paciente consegue fazer</h2>
+          <ul>
+            <li>Agendar consulta por especialidade/profissional.</li>
+            <li>Ver proximos agendamentos.</li>
+            <li>Cancelar agendamento (se habilitado).</li>
+            <li>Consultar planos aceitos e horario de atendimento.</li>
+            <li>Pedir atendimento humano quando necessario.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>O que a clinica consegue controlar</h2>
+          <ul>
+            <li>Mensagens do bot (boas-vindas, fallback, confirmacao etc.).</li>
+            <li>Menus interativos nativos do WhatsApp.</li>
+            <li>Regras operacionais (cancelamento/remarcacao automatica).</li>
+            <li>Parametros de disponibilidade e limites de exibicao.</li>
+            <li>Seguranca de webhook com token de entrada.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="section card">
+        <h2>Proposta de Trial - 15 dias</h2>
+        <div class="plan">
+          <strong>Objetivo:</strong> validar adesao real com equipe e pacientes antes de contrato definitivo.
+        </div>
+        <ul>
+          <li><strong>Dias 1-2:</strong> configuracao inicial e conexao do WhatsApp.</li>
+          <li><strong>Dias 3-7:</strong> uso assistido com ajustes finos de mensagem/regra.</li>
+          <li><strong>Dias 8-15:</strong> operacao real e analise de resultado.</li>
+        </ul>
+      </section>
+
+      <section class="section grid-2">
+        <article class="card">
+          <h2>Indicadores para avaliar no trial</h2>
+          <ul>
+            <li>Tempo medio de resposta.</li>
+            <li>Percentual de atendimentos resolvidos sem humano.</li>
+            <li>Volume de agendamentos concluido no WhatsApp.</li>
+            <li>Reducao de carga no time de atendimento.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>Mensagem comercial sugerida</h2>
+          <p class="small muted">
+            "Voce testa por 15 dias em ambiente real. Se fizer sentido para sua operacao, seguimos.
+            Se nao fizer, voce encerra sem friccao."
+          </p>
+          <p class="small muted">
+            "E para clinicas com sistema proprio, ativamos integracao n8n por projeto."
+          </p>
+        </article>
+      </section>
+
+      <section class="cta">
+        <h2>Resumo executivo</h2>
+        <ul>
+          <li><strong>Agora:</strong> Evolution + sistema (simples e rapido para vender).</li>
+          <li><strong>Depois:</strong> n8n opcional por cliente (sem alterar produto base).</li>
+          <li><strong>Comercialmente:</strong> demo forte + trial de 15 dias com baixo risco.</li>
+        </ul>
+      </section>
+    </div>
+  </body>
+</html>

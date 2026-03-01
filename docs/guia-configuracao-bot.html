@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guia de Configuracao - Bot WhatsApp</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --text: #0f172a;
+        --muted: #475569;
+        --line: #dbe4ef;
+        --accent: #0f766e;
+        --accent-soft: #ccfbf1;
+        --warn: #92400e;
+        --warn-soft: #ffedd5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 45%, #ecfeff 100%);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 28px 20px 44px;
+      }
+
+      .hero {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 6px 24px rgba(15, 23, 42, 0.05);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 32px;
+      }
+
+      h2 {
+        margin: 24px 0 10px;
+        font-size: 22px;
+      }
+
+      h3 {
+        margin: 18px 0 8px;
+        font-size: 18px;
+      }
+
+      p {
+        margin: 8px 0;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .card {
+        margin-top: 18px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+      }
+
+      .tag {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent);
+        border: 1px solid #99f6e4;
+        border-radius: 999px;
+        padding: 2px 10px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .warn {
+        border: 1px solid #fdba74;
+        background: var(--warn-soft);
+        color: var(--warn);
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 10px;
+        vertical-align: top;
+      }
+
+      th {
+        background: #eff6ff;
+        text-align: left;
+      }
+
+      code {
+        background: #0f172a;
+        color: #e2e8f0;
+        border-radius: 6px;
+        padding: 2px 6px;
+        font-size: 13px;
+      }
+
+      ol,
+      ul {
+        margin-top: 8px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="hero">
+        <span class="tag">Manual Operacional</span>
+        <h1>Guia do Menu de Configuracao do Bot WhatsApp</h1>
+        <p class="muted">
+          Este documento explica cada campo da aba <strong>Bot WhatsApp</strong> em
+          <code>/admin/settings?tab=bot</code> e mostra como configurar para funcionar
+          hoje sem n8n, deixando n8n pronto para uso opcional no futuro.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>1) Configuracao minima para funcionar (sem n8n)</h2>
+        <ol>
+          <li>Abra a aba <strong>Bot WhatsApp</strong>.</li>
+          <li>Preencha: numero da clinica, URL da Evolution, nome da instancia e token da Evolution.</li>
+          <li>Salve as configuracoes.</li>
+          <li>Clique em <strong>Sincronizar WhatsApp</strong> e escaneie o QR Code.</li>
+          <li>Confirme status <strong>WhatsApp conectado</strong>.</li>
+          <li>
+            Na secao <strong>Destino do webhook</strong>, selecione
+            <strong>Sistema (sem n8n)</strong>, informe a URL base do seu sistema
+            e clique em <strong>Aplicar webhook no Evolution</strong>.
+            O destino final sera <code>/api/evolution/webhook</code>.
+          </li>
+          <li>
+            Se quiser proteger entrada, preencha <strong>Token do webhook (entrada)</strong>
+            e envie o mesmo token no header:
+            <code>Authorization: Bearer SEU_TOKEN</code> (ou
+            <code>x-evolution-webhook-token</code>).
+          </li>
+        </ol>
+        <div class="warn">
+          Se a instancia estiver conectada, os campos de numero/URL/instancia/token da
+          Evolution ficam bloqueados. Para alterar, use <strong>Desconectar instancia</strong>
+          ou <strong>Excluir instancia</strong>.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2) Integracao WhatsApp</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Campo / Acao</th>
+              <th>Para que serve</th>
+              <th>Como preencher</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Numero WhatsApp da clinica</td>
+              <td>Numero oficial usado no atendimento.</td>
+              <td>Formato BR com DDD + numero (10 ou 11 digitos).</td>
+            </tr>
+            <tr>
+              <td>URL da Evolution API</td>
+              <td>Endereco base da API Evolution.</td>
+              <td>Ex.: <code>http://localhost:8080</code> ou URL publica.</td>
+            </tr>
+            <tr>
+              <td>Nome da instancia</td>
+              <td>Identificador da sessao WhatsApp na Evolution.</td>
+              <td>Use nome unico e estavel por clinica.</td>
+            </tr>
+            <tr>
+              <td>Token da Evolution API</td>
+              <td>Autenticacao para chamadas de envio/controle da instancia.</td>
+              <td>Token gerado na Evolution.</td>
+            </tr>
+            <tr>
+              <td>Token do webhook (entrada)</td>
+              <td>Protege o endpoint <code>/api/evolution/webhook</code>.</td>
+              <td>Opcional, mas recomendado em producao.</td>
+            </tr>
+            <tr>
+              <td>Sincronizar WhatsApp</td>
+              <td>Consulta/cria instancia e retorna QR Code quando necessario.</td>
+              <td>Use depois de salvar os campos da Evolution.</td>
+            </tr>
+            <tr>
+              <td>Desconectar instancia</td>
+              <td>Despareia WhatsApp sem apagar configuracao.</td>
+              <td>Use para trocar conta ou editar integracao bloqueada.</td>
+            </tr>
+            <tr>
+              <td>Excluir instancia</td>
+              <td>Remove instancia na Evolution.</td>
+              <td>Use com cuidado; exige nova sincronizacao completa.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>3) Integracao n8n (opcional por cliente)</h2>
+        <p class="muted">
+          Hoje voce pode operar sem n8n. Esta secao fica pronta para clientes que
+          precisem integrar agenda externa/ERP/Google Calendar.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Campo / Acao</th>
+              <th>Uso</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Encaminhar para</td>
+              <td>Escolhe o destino do webhook da Evolution: sistema ou n8n.</td>
+              <td><code>Sistema (sem n8n)</code> para demo/trial.</td>
+            </tr>
+            <tr>
+              <td>URL base do sistema</td>
+              <td>Base usada quando o destino for o proprio sistema.</td>
+              <td><code>https://seu-dominio.com</code> ou <code>http://localhost:3000</code>.</td>
+            </tr>
+            <tr>
+              <td>Modo de webhook (n8n)</td>
+              <td><code>production</code> usa <code>/webhook</code>; <code>test</code> usa <code>/webhook-test</code>.</td>
+              <td>Padrao: <code>production</code>.</td>
+            </tr>
+            <tr>
+              <td>URL base do n8n</td>
+              <td>Endereco do n8n para montar URL final de webhook.</td>
+              <td><code>http://n8n:5678</code> (docker) ou URL publica.</td>
+            </tr>
+            <tr>
+              <td>Path do webhook no n8n</td>
+              <td>Slug do endpoint do workflow no n8n.</td>
+              <td><code>evolution</code>.</td>
+            </tr>
+            <tr>
+              <td>Aplicar webhook no Evolution</td>
+              <td>Configura a Evolution para enviar evento ao destino selecionado.</td>
+              <td>Use sempre apos trocar destino/campos.</td>
+            </tr>
+            <tr>
+              <td>Verificar webhook atual</td>
+              <td>Le o webhook ativo da instancia na Evolution.</td>
+              <td>Valida se URL/eventos estao corretos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>4) Regras operacionais</h2>
+        <ul>
+          <li><strong>Bot habilitado:</strong> liga/desliga respostas automaticas.</li>
+          <li><strong>Cancelar automaticamente:</strong> permite cancelamento direto no bot.</li>
+          <li><strong>Remarcar automaticamente:</strong> controla resposta automatica para remarcacao.</li>
+          <li><strong>Menus interativos:</strong> usa listas/botoes nativos do WhatsApp.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>5) Comportamento do bot</h2>
+        <div class="grid">
+          <div>
+            <h3>Reconhecimento e agenda</h3>
+            <ul>
+              <li><strong>Saudacoes reconhecidas:</strong> palavras separadas por virgula.</li>
+              <li><strong>Dias para buscar disponibilidade:</strong> janela de busca no calendario.</li>
+              <li><strong>Maximo de dias mostrados:</strong> quantos dias sugerir para o paciente.</li>
+              <li><strong>Horarios no resumo por dia:</strong> limite de horarios exibidos por linha.</li>
+              <li><strong>Limite de agendamentos listados:</strong> tamanho da lista "Meus agendamentos".</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Digitacao simulada</h3>
+            <ul>
+              <li><strong>Delay de digitacao (ms):</strong> espera antes de enviar resposta.</li>
+              <li>
+                <strong>Presenca de digitacao:</strong>
+                <code>composing</code>, <code>recording</code> ou <code>paused</code>.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>6) Menus interativos</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Campo</th>
+              <th>Impacto na conversa</th>
+              <th>Dica pratica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Titulo do menu interativo</td>
+              <td>Titulo principal da lista enviada no WhatsApp.</td>
+              <td>Curto e claro, ex.: "Opcoes".</td>
+            </tr>
+            <tr>
+              <td>Texto do botao do menu</td>
+              <td>Texto do botao que abre a lista.</td>
+              <td>Ex.: "Ver opcoes".</td>
+            </tr>
+            <tr>
+              <td>Titulo da secao</td>
+              <td>Cabecalho da lista de itens.</td>
+              <td>Ex.: "Selecione uma opcao".</td>
+            </tr>
+            <tr>
+              <td>Rotulo do botao voltar</td>
+              <td>Texto do item de voltar (id 0).</td>
+              <td>Ex.: "Voltar".</td>
+            </tr>
+            <tr>
+              <td>Descricao do botao voltar</td>
+              <td>Descricao adicional do item "Voltar".</td>
+              <td>Ex.: "Voltar ao menu".</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>7) Mensagens do bot</h2>
+        <p>Campos editaveis no painel:</p>
+        <ul>
+          <li>Boas-vindas</li>
+          <li>Primeiro contato</li>
+          <li>Fallback</li>
+          <li>Horario de atendimento</li>
+          <li>Confirmacao</li>
+          <li>Cancelamento</li>
+          <li>Remarcacao</li>
+          <li>Encaminhamento humano</li>
+        </ul>
+        <p class="muted">
+          Todas as mensagens aceitam texto livre (ate 1000 caracteres cada).
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>8) Checklist de validacao</h2>
+        <ol>
+          <li>Bot habilitado = ligado.</li>
+          <li>Evolution conectada e com instancia aberta.</li>
+          <li>Webhook apontando para o destino correto (sistema ou n8n).</li>
+          <li>Token de webhook configurado de forma consistente (se ativado).</li>
+          <li>Enviar mensagem real no WhatsApp e validar resposta do bot.</li>
+          <li>Testar fluxo: agendar, listar, cancelar e fallback.</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2>9) Estrategia recomendada para seu cenario</h2>
+        <ul>
+          <li>
+            <strong>Padrao para demo e trial:</strong> Evolution + seu sistema
+            (sem n8n no caminho principal).
+          </li>
+          <li>
+            <strong>Cliente com sistema externo:</strong> habilitar modo n8n por cliente e
+            manter mesma experiencia de conversa.
+          </li>
+          <li>
+            <strong>Evitar:</strong> duas logicas diferentes de bot em paralelo.
+          </li>
+        </ul>
+      </section>
+    </div>
+  </body>
+</html>

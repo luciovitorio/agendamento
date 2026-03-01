@@ -1,0 +1,20 @@
+@'
+# envs/sigilo
+.env
+.env.*
+!.env.example
+web/.env.local
+web/.env.*.local
+
+# deps/build
+web/node_modules/
+web/.next/
+web/.turbo/
+web/dist/
+
+# logs/OS/editor
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+'@ | Set-Content .gitignore -Encoding UTF8
